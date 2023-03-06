@@ -44,4 +44,4 @@ if __name__ == '__main__':
 
     message_send.send_all(message_tokens=message_tokens, title=title, content=message_all)
 
-    print(message_all)
+    print('finish')
