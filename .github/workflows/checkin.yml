@@ -1,0 +1,19 @@
+name: aliyundrive-checkin
+on:
+  schedule:
+  - cron: 0 16 * * * 
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run checkin
+        run: |
+          python3 ./main.py --token_string "${{ secrets.TOKEN }}"
+        env:
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          SERVERCHAN_SENDKEY: ${{ secrets.SCKEY }}
+          WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
+          BARK_DEVICEKEY: ${{ secrets.BARK_DEVICEKEY }}
+      - uses: gautamkrishnar/keepalive-workflow@master
