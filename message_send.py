@@ -31,7 +31,7 @@ class MessageSend:
                 try:
                     ret = self.sender[token_key](token_value, title, content)
                 except:
-                    print(f"【Sender】Something wrong happened when handle {self.sender[token_key]}")
+                    print(f"[Sender]Something wrong happened when handle {self.sender[token_key]}")
 
     def pushplus(self, token, title, content):
         assert type(token) == str, "Wrong type for pushplus token."
@@ -46,9 +46,9 @@ class MessageSend:
         resp = requests.post("http://www.pushplus.plus/send", data=payload)
         resp_json = resp.json()
         if resp_json["code"] == 200:
-            print(f"【Pushplus】Send message to Pushplus successfully.")
+            print(f"[Pushplus]Send message to Pushplus successfully.")
         if resp_json["code"] != 200:
-            print(f"【Pushplus】【Send Message Response】{resp.text}")
+            print(f"[Pushplus][Send Message Response]{resp.text}")
             return -1
         return 0
 
@@ -62,9 +62,9 @@ class MessageSend:
         resp = requests.post(f"https://sctapi.ftqq.com/{sendkey}.send", data=payload)
         resp_json = resp.json()
         if resp_json["code"] == 0:
-            print(f"【ServerChan】Send message to ServerChan successfully.")
+            print(f"[ServerChan]Send message to ServerChan successfully.")
         if resp_json["code"] != 0:
-            print(f"【ServerChan】【Send Message Response】{resp.text}")
+            print(f"[ServerChan][Send Message Response]{resp.text}")
             return -1
         return 0
 
@@ -76,7 +76,7 @@ class MessageSend:
         resp = requests.get(get_token_url)
         resp_json = resp.json()
         if resp_json["errcode"] != 0:
-            print(f"【WeCom】【Get Token Response】{resp.text}")
+            print(f"[WeCom][Get Token Response]{resp.text}")
         access_token = resp_json.get('access_token')
         if access_token is None or len(access_token) == 0:
             return -1
@@ -93,9 +93,9 @@ class MessageSend:
         resp = requests.post(send_msg_url, data=json.dumps(data))
         resp_json = resp.json()
         if resp_json["errcode"] == 0:
-            print(f"【WeCom】Send message to WeCom successfully.")
+            print(f"[WeCom]Send message to WeCom successfully.")
         if resp_json["errcode"] != 0:
-            print(f"【WeCom】【Send Message Response】{resp.text}")
+            print(f"[WeCom][Send Message Response]{resp.text}")
             return -1
         return 0
 
@@ -114,9 +114,9 @@ class MessageSend:
         resp = requests.post(webhook, headers=headers, data=json.dumps(data))
         resp_json = resp.json()
         if resp_json["errcode"] == 0:
-            print(f"【WeCom】Send message to WeCom successfully.")
+            print(f"[WeCom]Send message to WeCom successfully.")
         if resp_json["errcode"] != 0:
-            print(f"【WeCom】【Send Message Response】{resp.text}")
+            print(f"[WeCom][Send Message Response]{resp.text}")
             return -1
         return 0
 
@@ -137,8 +137,8 @@ class MessageSend:
         resp = requests.post(url, headers=headers, data=json.dumps(data))
         resp_json = resp.json()
         if resp_json["code"] == 200:
-            print(f"【Bark】Send message to Bark successfully.")
+            print(f"[Bark]Send message to Bark successfully.")
         if resp_json["code"] != 200:
-            print(f"【Bark】【Send Message Response】{resp.text}")
+            print(f"[Bark][Send Message Response]{resp.text}")
             return -1
         return 0
