@@ -3,10 +3,9 @@ import re
 import argparse
 
 from message_send import MessageSend
-from aliyundrive import aliyundrive_check_in
+from aliyundrive import Aliyundrive
 
 if __name__ == '__main__':
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--token_string', type=str, required=True)
 
@@ -25,17 +24,13 @@ if __name__ == '__main__':
     }
 
     message_send = MessageSend()
-
     message_all = ''
     token_string = token_string.split(',')
-    for idx, token in enumerate(token_string):
-        result = aliyundrive_check_in(token)
+    ali = Aliyundrive()
 
-        message_all = f'{message_all}token_{idx+1}  '
-        if result.success:
-            message_all = f'{message_all}用户：{result.user_name}：{result.msg}\n'
-        else:
-            message_all = f'{message_all}签到失败，错误信息：{result.msg}\n'
+    for idx, token in enumerate(token_string):
+        result = ali.aliyundrive_check_in(token)
+        message_all = f'{message_all}(token {idx+1}){result}'
 
     title = '阿里云盘签到结果'
     message_all = f'{title}\n{message_all}'

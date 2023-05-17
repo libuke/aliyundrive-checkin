@@ -1,5 +1,6 @@
 # aliyundrive-checkin
-* aliyundrive-checkin是一个定时自动签到的python程序
+- aliyundrive-checkin是一个定时自动签到的python程序
+- 2023/5/17： 增加自动领取签到奖励、显示本月签到次数
 
 # 如何使用？ 
 1. Fork项目到自己的仓库
@@ -19,10 +20,11 @@
 3. 点击Actions -> 选择aliyundrive-checkin -> 点击Run workflow 运行即可
 
 ### 其它设置
+- 需要调整推送内容修改aliyundrive_info.py文件即可
 - 自动签到时间修改.github/workflows/checkin.yml文件 cron项即可实现
-- 该cron指定的是格林尼治时间（UTC），如果需要换算成北京时间，要在该cron的基础上增加八小时得到北京时间。
+  - 该cron指定的是格林尼治时间（UTC），如果需要换算成北京时间，要在该cron的基础上增加八小时得到北京时间。
 
-# 如何获取阿里云盘TOKEN？
-网上有众多详细教程，可自行google、baidu搜索
+### 如何获取阿里云盘TOKEN？
+- [https://alist.nn.ci/zh/guide/drivers/aliyundrive.html](https://alist.nn.ci/zh/guide/drivers/aliyundrive.html)
 
-### 如侵权请联系本人删除
+# 如侵权请联系本人删除
