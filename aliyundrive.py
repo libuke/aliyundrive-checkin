@@ -3,7 +3,6 @@ import requests
 
 from aliyundrive_info import AliyundriveInfo
 
-
 class Aliyundrive:
     """
     阿里云盘签到（自动领取奖励）
