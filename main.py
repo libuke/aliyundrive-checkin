@@ -23,20 +23,22 @@ if __name__ == '__main__':
         'bark_deviceKey': bark_deviceKey
     }
 
-    message_send = MessageSend()
-    message_all = ''
     token_string = token_string.split(',')
     ali = Aliyundrive()
-
+    message_all = ''
     for idx, token in enumerate(token_string):
         result = ali.aliyundrive_check_in(token)
-        message_all = f'{message_all}(token {idx+1}){result}'
+        message_all = f'{message_all}{result}'
+
+        if idx < len(token_string) - 1:  
+            message_all = f'{message_all}\n\n'
 
     title = '阿里云盘签到结果'
     message_all = f'{title}\n{message_all}'
     message_all = re.sub('\n+','\n', message_all)
     if message_all.endswith('\n'): message_all = message_all[:-1]
 
-    message_send.send_all(message_tokens=message_tokens, title=title, content=message_all)
+    message_send = MessageSend()
+    message_send.send_all(message_tokens, title, message_all)
 
     print('finish')
