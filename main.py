@@ -31,7 +31,7 @@ if __name__ == '__main__':
         message_all = f'{message_all}{result}'
 
         if idx < len(token_string) - 1:  
-            message_all = f'{message_all}\n\n'
+            message_all = f'{message_all}\n--\n'
 
     title = '阿里云盘签到结果'
     message_all = f'{title}\n{message_all}'
