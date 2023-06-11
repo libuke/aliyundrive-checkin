@@ -26,15 +26,15 @@ class Aliyundrive:
         try:
             flag, user_name, access_token, message = self._get_access_token(token)
             if not flag:
-                return handle_error(info, f'get_access_token error: {message}')
+                return handle_error(f'get_access_token error: {message}')
             
             flag, signin_count, message = self._check_in(access_token)
             if not flag:
-                return handle_error(info, f'check_in error: {message}')
+                return handle_error(f'check_in error: {message}')
             
             flag, message = self._get_reward(access_token, signin_count)
             if not flag:
-                return handle_error(info, f'get_reward error: {message}')
+                return handle_error(f'get_reward error: {message}')
             
             info.success = True
             info.user_name = user_name
@@ -61,7 +61,6 @@ class Aliyundrive:
         payload = {'grant_type': 'refresh_token', 'refresh_token': token}
 
         response = requests.post(url, json=payload, timeout=5)
-        response.raise_for_status()
         data = response.json()
 
         if 'code' in data and data['code'] in ['RefreshTokenExpired', 'InvalidParameter.RefreshToken']:
@@ -88,7 +87,6 @@ class Aliyundrive:
         headers = {'Authorization': f'Bearer {access_token}'}
 
         response = requests.post(url, json=payload, params=params, headers=headers, timeout=5)
-        response.raise_for_status()
         data = response.json()
 
         if 'success' not in data:
@@ -115,7 +113,6 @@ class Aliyundrive:
         headers = {'Authorization': f'Bearer {access_token}'}
 
         response = requests.post(url, json=payload, params=params, headers=headers, timeout=5)
-        response.raise_for_status()
         data = response.json()
 
         if 'result' not in data:
