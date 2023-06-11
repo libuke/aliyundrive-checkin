@@ -1,6 +1,7 @@
 # aliyundrive-checkin
 - aliyundrive-checkin是一个定时自动签到的python程序
 - 2023/5/17： 增加自动领取签到奖励、显示本月签到次数
+- 2023/6/12： 增加requests出错重试，使用chatgpt优化代码结构
 
 # 如何使用？ 
 1. Fork项目到自己的仓库
