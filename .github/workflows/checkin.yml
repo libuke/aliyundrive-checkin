@@ -19,4 +19,5 @@ jobs:
           SERVERCHAN_SENDKEY: ${{ secrets.SCKEY }}
           WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
           BARK_DEVICEKEY: ${{ secrets.BARK_DEVICEKEY }}
+          FEISHU_DEVICEKEY: ${{ secrets.FEISHU_DEVICEKEY }}
       - uses: gautamkrishnar/keepalive-workflow@master
