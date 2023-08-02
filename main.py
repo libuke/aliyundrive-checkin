@@ -14,12 +14,14 @@ def main():
     serverChan_sendkey = os.environ.get('SERVERCHAN_SENDKEY')
     weCom_webhook = os.environ.get('WECOM_WEBHOOK')
     bark_deviceKey = os.environ.get('BARK_DEVICEKEY')
+    feishu_deviceKey = os.environ.get('FEISHU_DEVICEKEY')
 
     message_tokens = {
         'pushplus_token': pushplus_token,
         'serverChan_token': serverChan_sendkey,
         'weCom_webhook': weCom_webhook,
-        'bark_deviceKey': bark_deviceKey
+        'bark_deviceKey': bark_deviceKey,
+        'feishu_deviceKey': feishu_deviceKey,
     }
 
     token_string = token_string.split(',')
