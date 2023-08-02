@@ -10,6 +10,7 @@ class MessageSend:
         self.register("weCom_tokens", self.weCom)
         self.register("weCom_webhook", self.weCom_bot)
         self.register("bark_deviceKey", self.bark)
+        self.register("feishu_deviceKey", self.feishu)
 
     def register(self, token_name, callback):
         assert token_name not in self.sender, "Register fails, the token name exists."
@@ -139,6 +140,43 @@ class MessageSend:
         if resp_json["code"] == 200:
             print(f"[Bark]Send message to Bark successfully.")
         if resp_json["code"] != 200:
+            print(f"[Bark][Send Message Response]{resp.text}")
+            return -1
+        return 0
+
+    def feishu(self, device_key, title, content):
+        assert type(device_key) == str, "Wrong type for feishu token."
+
+        url = f'https://open.feishu.cn/open-apis/bot/v2/hook/{device_key}'
+        headers = {
+            "content-type": "application/json",
+            "charset": "utf-8"
+        }
+
+        data = {
+            "msg_type": "post",
+            "content": {
+                "post": {
+                    "zh_cn": {
+                        "title": title,
+                        "content": [
+                                [
+                                    {
+                                        "tag": "text",
+                                        "text": content,
+                                    }
+                                ]
+                        ]
+                    }
+                }
+            }
+        }
+
+        resp = requests.post(url, headers=headers, json=data)
+        resp_json = resp.json()
+        if resp_json["code"] == 0:
+            print(f"[Bark]Send message to Bark successfully.")
+        if resp_json["code"] != 0:
             print(f"[Bark][Send Message Response]{resp.text}")
             return -1
         return 0
