@@ -17,6 +17,7 @@
     | PUSHPLUS_TOKEN  | pushplus 推送Token |
     | WECOM_WEBHOOK  | 企业微信 WEBHOOK |
     | BARK_DEVICEKEY  | IOS应用Bark 推送密钥 |
+    | FEISHU_DEVICEKEY  | 飞书 推送密钥 |
 
 以上TOKEN为阿里云盘签到必填项 推送项选择其中一个即可 也可多渠道推送
 
