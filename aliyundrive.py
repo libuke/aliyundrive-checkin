@@ -20,7 +20,7 @@ class Aliyundrive:
             signin_count=-1,
             message='',
             reward_notice='',
-            task=''
+            task_notice=''
         )
 
         def handle_error(error_message: str) -> AliyundriveInfo:
@@ -40,15 +40,15 @@ class Aliyundrive:
             if not flag:
                 return handle_error(f'get_reward error: {message}')
 
-            flag, task = self._get_task(access_token)
+            flag, message, reward_notice, task_notice = self._get_task(access_token)
             if not flag:
-                return handle_error(f'get_task error: {task}')
+                return handle_error(f'get_task error: {message}')
 
             info.success = True
             info.user_name = user_name
             info.signin_count = signin_count
-            info.reward_notice = message
-            info.task = task
+            info.reward_notice = reward_notice
+            info.task_notice = task_notice
 
             return info
 
@@ -79,7 +79,7 @@ class Aliyundrive:
         nick_name, user_name = data['nick_name'], data['user_name']
         name = nick_name if nick_name else user_name
         access_token = data['access_token']
-        return True, name, access_token, '成功获取access_token'
+        return True, name, access_token, ''
 
     """
     执行签到操作
@@ -106,7 +106,7 @@ class Aliyundrive:
         success = data['success']
         signin_count = data['result']['signInCount']
 
-        return success, signin_count, '签到成功'
+        return success, signin_count, ''
 
     """
     获得奖励
@@ -114,7 +114,7 @@ class Aliyundrive:
     :param token: 调用_get_access_token方法返回的access_token
     :param sign_day: 领取第几天
     :return tuple[0]: 是否成功
-    :return tuple[1]: message 奖励信息或者出错信息
+    :return tuple[1]: message
     """
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
@@ -131,16 +131,16 @@ class Aliyundrive:
             return False, data['message']
 
         success = data['success']
-        notice = data['result']['notice']
-        return success, notice
+        return success, ''
 
     """
-    今日任务
+    今日奖励/任务
 
     :param token: 调用_get_access_token方法返回的access_token
-    :param sign_day: 领取第几天
     :return tuple[0]: 是否成功
-    :return tuple[1]: message 奖励信息或者出错信息
+    :return tuple[1]: message
+    :return tuple[2]: 奖励信息
+    :return tuple[3]: 任务信息
     """
 
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
@@ -158,23 +158,20 @@ class Aliyundrive:
 
         success = data['success']
         signInInfos = data['result']['signInInfos']
-        year, month, day = time.localtime()[:3]
+        
+        day = time.localtime().tm_mday
+        rewards = filter(lambda info: int(info.get('day', 0)) == day, signInInfos)
+        
+        award_notice = ''
+        task_notice = ''
 
-        task_str = ""
-        for info in signInInfos:
-            if int(info['day']) == day:
-                rewards = info['rewards']
+        for reward in next(rewards)['rewards']:
+            name = reward['name']
+            remind = reward['remind']
+            type = reward['type']
 
-                for reward in rewards:
-                    name = reward['name']
-                    remind = reward['remind']
-                    type = reward['type']
-                    if type == "dailySignIn":
-                        task_str += f'  类型：签到\n' \
-                                    f'  要求：{remind}\n' \
-                                    f'  奖励：{name}\n'
-                    if type == "dailyTask":
-                        task_str += f'  类型：任务\n' \
-                                    f'  要求：{remind}\n' \
-                                    f'  奖励：{name}\n'
-        return success, task_str
+            if type == "dailySignIn":
+                award_notice = name
+            if type == "dailyTask":
+                task_notice = f'{remind}（{name}）'
+        return success, '', award_notice, task_notice

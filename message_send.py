@@ -102,7 +102,7 @@ class MessageSend:
                     {
                         "title": title,
                         "description": content,
-                        "picurl": "https://raw.githubusercontent.com/thsrite/aliyundrive-checkin/main/aliyunpan.jpg",
+                        "picurl": "https://raw.githubusercontent.com/libuke/aliyundrive-checkin/main/aliyunpan.jpg",
                         "url": ''
                     }
                 ]
@@ -171,24 +171,7 @@ class MessageSend:
             "charset": "utf-8"
         }
 
-        data = {
-            "msg_type": "post",
-            "content": {
-                "post": {
-                    "zh_cn": {
-                        "title": title,
-                        "content": [
-                            [
-                                {
-                                    "tag": "text",
-                                    "text": content,
-                                }
-                            ]
-                        ]
-                    }
-                }
-            }
-        }
+        data = {"msg_type": "post", "content": {"post": {"zh_cn": {"title": title, "content": [[{"tag": "text", "text": content}]]}}}}
 
         resp = requests.post(url, headers=headers, json=data)
         resp_json = resp.json()
