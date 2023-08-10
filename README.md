@@ -15,6 +15,7 @@
     | TOKEN *   | 阿里云盘Token 可以添加多个用英文逗号(,)分割 无需空格  |
     | SCKEY  | Server酱 推送密钥 |
     | PUSHPLUS_TOKEN  | pushplus 推送Token |
+    | WECOM_TOKENS  | 企业微信 tokens |
     | WECOM_WEBHOOK  | 企业微信 WEBHOOK |
     | BARK_DEVICEKEY  | IOS应用Bark 推送密钥 |
     | FEISHU_DEVICEKEY  | 飞书 推送密钥 |
