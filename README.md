@@ -1,6 +1,6 @@
 # aliyundrive-checkin
 - aliyundrive-checkin是一个定时自动签到的python程序
-- 2023/8/10： 推送支持微信应用图文消息，支持获取每日任务
+- 2023/8/10： 推送支持微信应用图文消息、消息代理，支持获取每日任务[[@bequt](https://github.com/thsrite)]
 - 2023/8/02： 采用linux构建，外加飞书推送支持 [[@bequt](https://github.com/bequt)]
 - 2023/6/12： 增加requests出错重试，使用chatgpt优化代码结构
 - 2023/5/17： 增加自动领取签到奖励，显示本月签到次数
