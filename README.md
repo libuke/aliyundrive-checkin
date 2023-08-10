@@ -22,6 +22,8 @@
 
 以上TOKEN为阿里云盘签到必填项 推送项选择其中一个即可 也可多渠道推送
 
+WECOM_TOKENS: weCom_corpId, weCom_corpSecret, weCom_agentId, to_user, proxy_url （, to_user, proxy_url可选）
+
 3. 点击Actions -> 选择aliyundrive-checkin -> 点击Run workflow 运行即可
 
 ### 其它设置
