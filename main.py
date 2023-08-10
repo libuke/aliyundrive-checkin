@@ -1,8 +1,10 @@
+import logging
 import os
 import re
 import argparse
 from aliyundrive import Aliyundrive
 from message_send import MessageSend
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -41,10 +43,13 @@ def main():
     message_all = '\n'.join(message_all)
     message_all = re.sub('\n+', '\n', message_all).rstrip('\n')
 
+    logging.info(message_all)
+
     message_send = MessageSend()
     message_send.send_all(message_tokens, title, message_all)
 
     print('finish')
+
 
 if __name__ == '__main__':
     main()
