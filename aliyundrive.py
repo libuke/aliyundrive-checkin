@@ -1,7 +1,9 @@
-import json
+import time
+
 import requests
 from aliyundrive_info import AliyundriveInfo
 from tenacity import retry, stop_after_attempt, wait_fixed, RetryError
+
 
 class Aliyundrive:
     """
@@ -10,42 +12,49 @@ class Aliyundrive:
     :param token: 阿里云盘token
     :return AliyundriveInfo: 
     """
+
     def aliyundrive_check_in(self, token: str) -> AliyundriveInfo:
         info = AliyundriveInfo(
-            success=False, 
-            user_name='', 
-            signin_count=-1, 
-            message='', 
-            reward_notice=''
+            success=False,
+            user_name='',
+            signin_count=-1,
+            message='',
+            reward_notice='',
+            task=''
         )
 
         def handle_error(error_message: str) -> AliyundriveInfo:
             info.message = error_message
             return info
-        
+
         try:
             flag, user_name, access_token, message = self._get_access_token(token)
             if not flag:
                 return handle_error(f'get_access_token error: {message}')
-            
+
             flag, signin_count, message = self._check_in(access_token)
             if not flag:
                 return handle_error(f'check_in error: {message}')
-            
+
             flag, message = self._get_reward(access_token, signin_count)
             if not flag:
                 return handle_error(f'get_reward error: {message}')
-            
+
+            flag, task = self._get_task(access_token)
+            if not flag:
+                return handle_error(f'get_task error: {task}')
+
             info.success = True
             info.user_name = user_name
             info.signin_count = signin_count
             info.reward_notice = message
+            info.task = task
 
             return info
 
         except RetryError as e:
             return handle_error(f'Unexpected error occurred: {str(e)}')
-        
+
     """
     获取access_token
 
@@ -55,6 +64,7 @@ class Aliyundrive:
     :return tuple[2]: access_token
     :return tuple[3]: message
     """
+
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
     def _get_access_token(self, token: str) -> tuple[bool, str, str, str]:
         url = 'https://auth.aliyundrive.com/v2/account/token'
@@ -70,7 +80,7 @@ class Aliyundrive:
         name = nick_name if nick_name else user_name
         access_token = data['access_token']
         return True, name, access_token, '成功获取access_token'
-    
+
     """
     执行签到操作
 
@@ -79,6 +89,7 @@ class Aliyundrive:
     :return tuple[1]: 签到次数
     :return tuple[2]: message
     """
+
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
     def _check_in(self, access_token: str) -> tuple[bool, int, str]:
         url = 'https://member.aliyundrive.com/v1/activity/sign_in_list'
@@ -96,7 +107,7 @@ class Aliyundrive:
         signin_count = data['result']['signInCount']
 
         return success, signin_count, '签到成功'
-    
+
     """
     获得奖励
 
@@ -105,6 +116,7 @@ class Aliyundrive:
     :return tuple[0]: 是否成功
     :return tuple[1]: message 奖励信息或者出错信息
     """
+
     @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
     def _get_reward(self, access_token: str, sign_day: int) -> tuple[bool, str]:
         url = 'https://member.aliyundrive.com/v1/activity/sign_in_reward'
@@ -117,7 +129,52 @@ class Aliyundrive:
 
         if 'result' not in data:
             return False, data['message']
-        
+
         success = data['success']
         notice = data['result']['notice']
         return success, notice
+
+    """
+    今日任务
+
+    :param token: 调用_get_access_token方法返回的access_token
+    :param sign_day: 领取第几天
+    :return tuple[0]: 是否成功
+    :return tuple[1]: message 奖励信息或者出错信息
+    """
+
+    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
+    def _get_task(self, access_token: str) -> tuple[bool, str]:
+        url = 'https://member.aliyundrive.com/v2/activity/sign_in_list'
+        payload = {}
+        params = {'_rx-s': 'mobile'}
+        headers = {'Authorization': f'Bearer {access_token}'}
+
+        response = requests.post(url, json=payload, params=params, headers=headers, timeout=5)
+        data = response.json()
+
+        if 'result' not in data:
+            return False, data['message']
+
+        success = data['success']
+        signInInfos = data['result']['signInInfos']
+        year, month, day = time.localtime()[:3]
+
+        task_str = ""
+        for info in signInInfos:
+            if int(info['day']) == day:
+                rewards = info['rewards']
+
+                for reward in rewards:
+                    name = reward['name']
+                    remind = reward['remind']
+                    type = reward['type']
+                    if type == "dailySignIn":
+                        task_str += f'  类型：签到\n' \
+                                    f'  要求：{remind}\n' \
+                                    f'  奖励：{name}\n'
+                    if type == "dailyTask":
+                        task_str += f'  类型：任务\n' \
+                                    f'  要求：{remind}\n' \
+                                    f'  奖励：{name}\n'
+        return success, task_str

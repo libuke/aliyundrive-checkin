@@ -1,7 +1,7 @@
 name: aliyundrive-checkin
 on:
   schedule:
-  - cron: 0 16 * * * 
+  - cron: 0 16 * * *
   workflow_dispatch:
 jobs:
   build:
@@ -17,6 +17,7 @@ jobs:
         env:
           PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
           SERVERCHAN_SENDKEY: ${{ secrets.SCKEY }}
+          WECOM_TOKENS: ${{ secrets.WECOM_TOKENS }}
           WECOM_WEBHOOK: ${{ secrets.WECOM_WEBHOOK }}
           BARK_DEVICEKEY: ${{ secrets.BARK_DEVICEKEY }}
           FEISHU_DEVICEKEY: ${{ secrets.FEISHU_DEVICEKEY }}

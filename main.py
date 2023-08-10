@@ -1,8 +1,10 @@
+import logging
 import os
 import re
 import argparse
 from aliyundrive import Aliyundrive
 from message_send import MessageSend
+
 
 def main():
     parser = argparse.ArgumentParser()
@@ -12,6 +14,7 @@ def main():
     token_string = args.token_string
     pushplus_token = os.environ.get('PUSHPLUS_TOKEN')
     serverChan_sendkey = os.environ.get('SERVERCHAN_SENDKEY')
+    weCom_tokens = os.environ.get('WECOM_TOKENS')
     weCom_webhook = os.environ.get('WECOM_WEBHOOK')
     bark_deviceKey = os.environ.get('BARK_DEVICEKEY')
     feishu_deviceKey = os.environ.get('FEISHU_DEVICEKEY')
@@ -19,6 +22,7 @@ def main():
     message_tokens = {
         'pushplus_token': pushplus_token,
         'serverChan_token': serverChan_sendkey,
+        'weCom_tokens': weCom_tokens,
         'weCom_webhook': weCom_webhook,
         'bark_deviceKey': bark_deviceKey,
         'feishu_deviceKey': feishu_deviceKey,
@@ -39,10 +43,13 @@ def main():
     message_all = '\n'.join(message_all)
     message_all = re.sub('\n+', '\n', message_all).rstrip('\n')
 
+    logging.info(message_all)
+
     message_send = MessageSend()
     message_send.send_all(message_tokens, title, message_all)
 
     print('finish')
+
 
 if __name__ == '__main__':
     main()
