@@ -1,5 +1,3 @@
-import datetime
-import json
 import time
 
 import requests
@@ -162,15 +160,9 @@ class Aliyundrive:
         signInInfos = data['result']['signInInfos']
         year, month, day = time.localtime()[:3]
 
-        # signInStaus = False
-        # signinReward = None
         task_str = ""
         for info in signInInfos:
             if int(info['day']) == day:
-                # status = info['status']
-                # if status == 'normal':
-                #     signInStaus = True
-                # subtitle = info['subtitle']
                 rewards = info['rewards']
 
                 for reward in rewards:
