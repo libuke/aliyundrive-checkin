@@ -2,7 +2,7 @@ import pytz
 import requests
 import datetime
 from aliyundrive_info import AliyundriveInfo
-from tenacity import retry, stop_after_attempt, wait_fixed, RetryError
+from tenacity import retry, stop_after_attempt, wait_random, RetryError
 
 class Aliyundrive:
     """
@@ -64,7 +64,7 @@ class Aliyundrive:
     :return tuple[3]: message
     """
 
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
+    @retry(stop=stop_after_attempt(10), wait=wait_random(min=5, max=30))
     def _get_access_token(self, token: str) -> tuple[bool, str, str, str]:
         url = 'https://auth.aliyundrive.com/v2/account/token'
         payload = {'grant_type': 'refresh_token', 'refresh_token': token}
@@ -89,7 +89,7 @@ class Aliyundrive:
     :return tuple[2]: message
     """
 
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
+    @retry(stop=stop_after_attempt(10), wait=wait_random(min=5, max=30))
     def _check_in(self, access_token: str) -> tuple[bool, int, str]:
         url = 'https://member.aliyundrive.com/v1/activity/sign_in_list'
         payload = {'isReward': False}
@@ -116,7 +116,7 @@ class Aliyundrive:
     :return tuple[1]: message
     """
 
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
+    @retry(stop=stop_after_attempt(10), wait=wait_random(min=5, max=30))
     def _get_reward(self, access_token: str, sign_day: int) -> tuple[bool, str]:
         url = 'https://member.aliyundrive.com/v1/activity/sign_in_reward'
         payload = {'signInDay': sign_day}
@@ -142,7 +142,7 @@ class Aliyundrive:
     :return tuple[3]: 任务信息
     """
 
-    @retry(stop=stop_after_attempt(3), wait=wait_fixed(1))
+    @retry(stop=stop_after_attempt(10), wait=wait_random(min=10, max=30))
     def _get_task(self, access_token: str) -> tuple[bool, str]:
         url = 'https://member.aliyundrive.com/v2/activity/sign_in_list'
         payload = {}
