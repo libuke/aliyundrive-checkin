@@ -1,6 +1,4 @@
-import pytz
 import requests
-import datetime
 from aliyundrive_info import AliyundriveInfo
 from tenacity import retry, stop_after_attempt, wait_random, RetryError
 
@@ -158,10 +156,7 @@ class Aliyundrive:
         success = data['success']
         signInInfos = data['result']['signInInfos']
 
-        shanghai_timezone = pytz.timezone('Asia/Shanghai')
-        current_datetime = datetime.datetime.now(shanghai_timezone)
-        day = current_datetime.day
-
+        day = data['result']['signInCount']
         rewards = filter(lambda info: int(info.get('day', 0)) == day, signInInfos)
         
         award_notice = ''
