@@ -1,4 +1,5 @@
 import os
+import re
 from aliyundrive import Aliyundrive
 
 
@@ -18,9 +19,12 @@ def main():
             message_all.append('--')
 
     #TODO: 发送通知
-    #title = '阿里云盘签到结果'
-    #message_all = '\n'.join(message_all)
-    #message_all = re.sub('\n+', '\n', message_all).rstrip('\n')
+    title = '阿里云盘签到结果'
+    message_all = '\n'.join(message_all)
+    message_all = re.sub('\n+', '\n', message_all).rstrip('\n')
+
+    print(title)
+    print(message_all)
 
     print('finish')
 
