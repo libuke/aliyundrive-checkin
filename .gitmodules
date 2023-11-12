@@ -1,0 +1,3 @@
+[submodule "qlapi"]
+	path = qlapi
+	url = https://github.com/yuxian158/qinglong-api.git

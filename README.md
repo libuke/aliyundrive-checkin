@@ -9,6 +9,7 @@
 
 
 # 如何使用？ 
+## Github Action
 1. Fork项目到自己的仓库
 2. 点击Settings -> 点击选项卡 Secrets and variables -> 点击Actions -> New repository secret
 
@@ -26,6 +27,29 @@
 以上TOKEN为阿里云盘签到必填项 推送项选择其中一个即可 也可多渠道推送
 
 3. 点击Actions -> 选择aliyundrive-checkin -> 点击Run workflow 运行即可
+
+## 青龙面板
+1. 使用以下参数添加订阅
+
+    | 项     | 值                              |
+    | ------ | ------------------------------- |
+    | 链接 | "--recursive https://github.com/libuke/aliyundrive-checkin.git" |
+    | 分支 | main |
+    | 白名单 | main_ql.py |
+    | 依赖文件 | ".py$\|qlapi" |
+  
+   注: recursive不是青龙支持的方法，仅在2.16.5上测试
+
+2. 添加环境变量
+  
+    从[mrabit/aliyundriveDailyCheck](https://github.com/mrabit/aliyundriveDailyCheck)迁移无需任何变量修改
+    - refreshToken*: 阿里云盘Token
+      - 可添加多个refreshToken
+    - CLIENT_ID: 青龙应用ID
+    - CLIENT_SECRET: 青龙应用SECRET
+      - 权限至少包含`环境变量`
+
+3. 设置喜欢的脚本运行时间，开始使用
 
 ### 其它设置
 - 需要调整推送内容修改aliyundrive_info.py文件即可
