@@ -36,7 +36,7 @@
     | 链接 | "--recursive https://github.com/libuke/aliyundrive-checkin.git" |
     | 分支 | main |
     | 白名单 | main_ql.py |
-    | 依赖文件 | ".py$|qlapi" |
+    | 依赖文件 | ".py$\|qlapi" |
   
    注: recursive不是青龙支持的方法，仅在2.16.5上测试
 
