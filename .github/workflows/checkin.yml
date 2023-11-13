@@ -1,8 +1,8 @@
 name: aliyundrive-checkin
 on:
+  workflow_dispatch:
   schedule:
   - cron: 0 16 * * *
-  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
