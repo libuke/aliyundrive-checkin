@@ -1,4 +1,4 @@
-# aliyundrive-checkin
+# aliyundrive-checkin2
 - aliyundrive-checkin是一个定时自动签到的python程序
 - 2023/11/09： 修复漏签时出现的问题 [[@cibimo](https://github.com/cibimo)]
 - 2023/10/22： 调整网络请求失败重试次数、重试间隔时间，减小签到失败的概率
