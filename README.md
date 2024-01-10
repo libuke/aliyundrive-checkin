@@ -1,5 +1,6 @@
 # aliyundrive-checkin
 - aliyundrive-checkin是一个定时自动签到的python程序
+- 2023/11/09： Bump actions/checkout to v4 [[@Goooler](https://github.com/Goooler)]
 - 2023/11/09： 修复漏签时出现的问题 [[@cibimo](https://github.com/cibimo)]
 - 2023/10/22： 调整网络请求失败重试次数、重试间隔时间，减小签到失败的概率
 - 2023/08/10： 推送支持微信应用图文消息、消息代理，支持获取每日任务 [[@thsrite](https://github.com/thsrite)]
