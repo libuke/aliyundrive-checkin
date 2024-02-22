@@ -1,47 +1,52 @@
 import os
 import re
 import argparse
-
+from aliyundrive import Aliyundrive
 from message_send import MessageSend
-from aliyundrive import aliyundrive_check_in
 
-if __name__ == '__main__':
 
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--token_string', type=str, required=True)
+    args = parser.parse_args()
 
-    args= parser.parse_args()
     token_string = args.token_string
-    pushplus_token = os.environ.get('PUSHPLUS_TOKEN', None)
-    serverChan_sendkey = os.environ.get('SERVERCHAN_SENDKEY', None)
-    weCom_webhook = os.environ.get('WECOM_WEBHOOK', None)
-    bark_deviceKey = os.environ.get('BARK_DEVICEKEY', None)
+    pushplus_token = os.environ.get('PUSHPLUS_TOKEN')
+    serverChan_sendkey = os.environ.get('SERVERCHAN_SENDKEY')
+    weCom_tokens = os.environ.get('WECOM_TOKENS')
+    weCom_webhook = os.environ.get('WECOM_WEBHOOK')
+    bark_deviceKey = os.environ.get('BARK_DEVICEKEY')
+    feishu_deviceKey = os.environ.get('FEISHU_DEVICEKEY')
 
     message_tokens = {
         'pushplus_token': pushplus_token,
         'serverChan_token': serverChan_sendkey,
+        'weCom_tokens': weCom_tokens,
         'weCom_webhook': weCom_webhook,
-        'bark_deviceKey': bark_deviceKey
+        'bark_deviceKey': bark_deviceKey,
+        'feishu_deviceKey': feishu_deviceKey,
     }
 
-    message_send = MessageSend()
-
-    message_all = ''
     token_string = token_string.split(',')
-    for idx, token in enumerate(token_string):
-        result = aliyundrive_check_in(token)
+    ali = Aliyundrive()
+    message_all = []
 
-        message_all = f'{message_all}token_{idx+1}  '
-        if result.success:
-            message_all = f'{message_all}用户：{result.user_name}：{result.msg}\n'
-        else:
-            message_all = f'{message_all}签到失败，错误信息：{result.msg}\n'
+    for idx, token in enumerate(token_string):
+        result = ali.aliyundrive_check_in(token)
+        message_all.append(str(result))
+
+        if idx < len(token_string) - 1:
+            message_all.append('--')
 
     title = '阿里云盘签到结果'
-    message_all = f'{title}\n{message_all}'
-    message_all = re.sub('\n+','\n', message_all)
-    if message_all.endswith('\n'): message_all = message_all[:-1]
+    message_all = '\n'.join(message_all)
+    message_all = re.sub('\n+', '\n', message_all).rstrip('\n')
 
-    message_send.send_all(message_tokens=message_tokens, title=title, content=message_all)
+    message_send = MessageSend()
+    message_send.send_all(message_tokens, title, message_all)
 
     print('finish')
+
+
+if __name__ == '__main__':
+    main()

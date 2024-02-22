@@ -1,6 +1,7 @@
 import requests
 import json
 
+
 class MessageSend:
     def __init__(self):
         self.sender = {}
@@ -10,6 +11,7 @@ class MessageSend:
         self.register("weCom_tokens", self.weCom)
         self.register("weCom_webhook", self.weCom_bot)
         self.register("bark_deviceKey", self.bark)
+        self.register("feishu_deviceKey", self.feishu)
 
     def register(self, token_name, callback):
         assert token_name not in self.sender, "Register fails, the token name exists."
@@ -69,10 +71,20 @@ class MessageSend:
         return 0
 
     def weCom(self, tokens, title, content):
-        assert len(tokens) == 3 and tokens.count(None) == 0 and tokens.count("") == 0
-        weCom_corpId, weCom_corpSecret, weCom_agentId = tokens
+        proxy_url = None
+        to_user = None
+        tokens = tokens.split(",")
+        if len(tokens) == 3:
+            weCom_corpId, weCom_corpSecret, weCom_agentId = tokens
+        elif len(tokens) == 4:
+            weCom_corpId, weCom_corpSecret, weCom_agentId, to_user = tokens
+        elif len(tokens) == 5:
+            weCom_corpId, weCom_corpSecret, weCom_agentId, to_user, proxy_url = tokens
+        else:
+            return -1
 
-        get_token_url = f"https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={weCom_corpId}&corpsecret={weCom_corpSecret}"
+        qy_url = proxy_url or "https://qyapi.weixin.qq.com"
+        get_token_url = f"{qy_url}/cgi-bin/gettoken?corpid={weCom_corpId}&corpsecret={weCom_corpSecret}"
         resp = requests.get(get_token_url)
         resp_json = resp.json()
         if resp_json["errcode"] != 0:
@@ -80,13 +92,20 @@ class MessageSend:
         access_token = resp_json.get('access_token')
         if access_token is None or len(access_token) == 0:
             return -1
-        send_msg_url = f'https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={access_token}'
+        send_msg_url = f'{qy_url}/cgi-bin/message/send?access_token={access_token}'
         data = {
-            "touser": "@all",
+            "touser": to_user or "@all",
             "agentid": weCom_agentId,
-            "msgtype": "markdown",
-            "markdown": {
-                "content": content
+            "msgtype": "news",
+            "news": {
+                "articles": [
+                    {
+                        "title": title,
+                        "description": content,
+                        "picurl": "https://raw.githubusercontent.com/libuke/aliyundrive-checkin/main/aliyunpan.jpg",
+                        "url": ''
+                    }
+                ]
             },
             "duplicate_check_interval": 600
         }
@@ -139,6 +158,26 @@ class MessageSend:
         if resp_json["code"] == 200:
             print(f"[Bark]Send message to Bark successfully.")
         if resp_json["code"] != 200:
+            print(f"[Bark][Send Message Response]{resp.text}")
+            return -1
+        return 0
+
+    def feishu(self, device_key, title, content):
+        assert type(device_key) == str, "Wrong type for feishu token."
+
+        url = f'https://open.feishu.cn/open-apis/bot/v2/hook/{device_key}'
+        headers = {
+            "content-type": "application/json",
+            "charset": "utf-8"
+        }
+
+        data = {"msg_type": "post", "content": {"post": {"zh_cn": {"title": title, "content": [[{"tag": "text", "text": content}]]}}}}
+
+        resp = requests.post(url, headers=headers, json=data)
+        resp_json = resp.json()
+        if resp_json["code"] == 0:
+            print(f"[Bark]Send message to Bark successfully.")
+        if resp_json["code"] != 0:
             print(f"[Bark][Send Message Response]{resp.text}")
             return -1
         return 0
