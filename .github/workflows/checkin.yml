@@ -3,14 +3,31 @@ on:
   schedule:
   - cron: 0 16 * * *
   workflow_dispatch:
+
+permissions:
+  contents: read
+  
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Detection Code
+        uses: actions/checkout@v4
+      
+      - name: Caching Python Dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pip
+            !~/.cache/pip/log/debug.log
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            
       - name: Install requirements
         run: |
-          pip3 install -r ./requirements.txt
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          
       - name: Run checkin
         run: |
           python3 ./main.py --token_string "${{ secrets.TOKEN }}"
