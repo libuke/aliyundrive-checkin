@@ -1,4 +1,5 @@
-# aliyundrive-checkin
+# aliyundrive-checkin-不可用-20240522
+# 阿里云盘签到接口引入了签名，目前还不知晓签名算法
 - aliyundrive-checkin是一个定时自动签到的python程序
 - 2024/02/08： 优化了action格式, 并添加了python依赖包的缓存 [[@hughware](https://github.com/hughware)]
 - 2023/11/09： Bump actions/checkout to v4 [[@Goooler](https://github.com/Goooler)]
